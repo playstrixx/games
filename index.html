@@ -6,37 +6,45 @@
     <title>Khushi vs Shubham: Cross & Zero (Dare Edition)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Pacifico&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Orbitron:wght@400;700;900&family=Pacifico&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #1a202c; /* Dark background */
+            background-color: #0d1117; /* GitHub Dark Mode Black */
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* Align to top for better scrolling/mobile view */
             min-height: 100vh;
-            padding: 1rem;
-            color: #e2e8f0; /* Light text */
+            padding: 2rem 1rem;
+            color: #e6edf3; /* Light text */
         }
-        .container {
+        .main-grid {
             width: 100%;
-            max-width: 450px; 
-            background-color: #2d3748; /* Darker container */
-            padding: 1.5rem;
-            border-radius: 16px;
-            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.4), 0 8px 15px -5px rgba(0, 0, 0, 0.2);
-            border: 1px solid #4a5568;
+            max-width: 1200px;
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: 1fr;
+        }
+        @media (min-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 2fr 1fr; /* Game 2/3, History 1/3 on desktop */
+            }
+        }
+        .card {
+            background-color: #161b22; /* Darker card background */
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 255, 255, 0.1); /* Subtle neon glow */
+            border: 1px solid #30363d;
+        }
+        h1, h2, .score-value {
+            font-family: 'Orbitron', sans-serif; /* Professional, futuristic font */
         }
         h1 {
-            font-family: 'Inter', sans-serif; /* Using Inter for sharp VS */
             font-weight: 900;
         }
-        h2 {
-            font-family: 'Pacifico', cursive; /* Cute font for titles */
-            color: #fbd38d; /* Gold/yellow for titles */
-        }
         .vs-comp {
-            /* Making VS aggressively red and glow */
-            text-shadow: 0 0 8px rgba(255, 0, 0, 0.7);
+            /* Neon red/cyan contrast */
+            text-shadow: 0 0 5px #ff3366, 0 0 10px #ff3366;
             transition: all 0.2s ease-in-out;
             cursor: default;
         }
@@ -48,8 +56,8 @@
         }
         .cell {
             aspect-ratio: 1 / 1;
-            background-color: #4a5568; 
-            border-radius: 12px; 
+            background-color: #1f242b; /* Cell background */
+            border-radius: 8px; 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -57,25 +65,24 @@
             font-weight: 700;
             cursor: pointer;
             transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
-            color: #a0aec0; 
             user-select: none;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
-            border: 1px solid #6c7a90;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+            border: 2px solid #30363d;
         }
         .cell:hover:not(.disabled) {
-            background-color: #5a6578;
-            transform: scale(1.05); /* Increased scale for strong hover */
-            box-shadow: 0 0 15px rgba(251, 211, 141, 0.7); /* Increased glow */
+            background-color: #2b3038;
+            transform: scale(1.05); 
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); /* Stronger neon cyan glow on hover */
         }
         .cell.disabled {
             cursor: default;
         }
-        /* Khushi is Hello Kitty (O), Shubham is Star (X) */
+        /* Shubham is Star (X), Khushi is Hello Kitty (O) */
         .cell.mark-X {
-            color: #a7e9e7; /* Light Blue for Shubham/Cute Star */
+            color: #00ffff; /* Neon Cyan for Shubham/Cute Star */
         }
         .cell.mark-O {
-            color: #f7cac9; /* Light Pink for Khushi/Hello Kitty */
+            color: #ff3366; /* Neon Pink/Red for Khushi/Hello Kitty */
         }
         .cell img {
             width: 80%;
@@ -92,28 +99,51 @@
             border-radius: 8px;
             margin-bottom: 1rem;
             animation: fadeIn 0.5s ease-out;
+            font-family: 'Inter', sans-serif;
         }
         .score-display {
             display: flex;
             justify-content: space-around;
             align-items: center;
             margin-bottom: 1.5rem;
-            background-color: #1a202c;
-            padding: 0.75rem;
+            background-color: #0d1117;
+            padding: 1rem 0;
             border-radius: 8px;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
         .score-box {
             text-align: center;
             font-size: 1.1rem;
-            color: #cbd5e0;
+            color: #8b949e;
         }
         .score-value {
-            font-family: 'Pacifico', cursive;
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: bold;
-            color: #fbd38d;
+            color: #00ffff;
             margin-top: 0.25rem;
+            text-shadow: 0 0 5px #00ffff50;
+        }
+        
+        .history-table th {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            color: #00ffff;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 0.5rem;
+        }
+        .history-table td {
+            font-size: 0.9rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #1f242b;
+        }
+        .history-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .history-winner {
+            color: #38a169; /* Green win */
+        }
+        .history-draw {
+            color: #ecc94b; /* Yellow draw */
         }
         .loading-overlay {
             position: fixed;
@@ -121,18 +151,18 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(26, 32, 44, 0.9); 
+            background: rgba(13, 17, 23, 0.95); 
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 1000;
             transition: opacity 0.3s;
-            color: #cbd5e0;
+            color: #00ffff;
         }
         .loading-spinner {
             animation: spin 1s linear infinite;
-            border-color: #fbd38d; 
+            border-color: #00ffff; 
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -142,32 +172,35 @@
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        /* Responsive adjustments */
-        @media (max-width: 600px) {
-            .cell {
-                font-size: 2.5rem;
-            }
-            .score-value {
-                font-size: 1.8rem;
-            }
+        .btn-base {
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-base:hover {
+            transform: translateY(-2px);
         }
     </style>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, setDoc, getDoc, updateDoc, collection, query, limit, orderBy, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Global variables provided by the environment
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        // Permanent Firebase Configuration (Provided by user for project 'games-1c1f5')
+        // Minimal config used to ensure Firebase Auth initializes correctly.
+        const FIREBASE_CONFIG = {
+            apiKey: "AIzaSyCnGV3jAxfcVze11wSfW_NzIS3z0rF8p6c",
+            authDomain: "games-1c1f5.firebaseapp.com",
+            projectId: "games-1c1f5",
+        };
+        const APP_ID = FIREBASE_CONFIG.projectId; 
 
         let app, db, auth, userId = null;
         let currentGameId = null;
         let playerMark = null; // 'X' or 'O'
         let unsubscribeGame = null;
-        let lastGameStatus = null; // Track previous status to trigger sound once
+        let unsubscribeHistory = null;
+        let lastGameStatus = null; 
 
         // ROLES: Shubham creates (X), Khushi joins (O)
         const PLAYER_NAMES = {
@@ -175,6 +208,7 @@
             'O': 'Khushi'   // Khushi is the Joiner (Hello Kitty)
         };
         const WINNING_SCORE = 5;
+        const HISTORY_LIMIT = 20;
 
         const ui = {
             gameIdInput: document.getElementById('gameIdInput'),
@@ -186,19 +220,21 @@
             gameStatus: document.getElementById('gameStatus'),
             boardContainer: document.getElementById('boardContainer'),
             yourPlayerName: document.getElementById('yourPlayerName'),
-            resetBtn: document.getElementById('resetBtn'),
             loadingOverlay: document.getElementById('loadingOverlay'),
             shubhamScoreDisplay: document.getElementById('shubhamScore'),
             khushiScoreDisplay: document.getElementById('khushiScore'),
             finalWinnerMessage: document.getElementById('finalWinnerMessage'),
-            newRoundBtn: document.getElementById('newRoundBtn')
+            newRoundBtn: document.getElementById('newRoundBtn'),
+            historyBody: document.getElementById('historyBody'),
+            historyMessage: document.getElementById('historyMessage'),
         };
 
         const COLLECTIONS = {
-            games: `artifacts/${appId}/public/data/tictactoe_games_shubham_khushi_tts`
+            games: `artifacts/${APP_ID}/public/data/tictactoe_games_shubham_khushi_tts`,
+            history: `artifacts/${APP_ID}/public/data/game_history`
         };
 
-        const API_KEY = ""; // Kept empty for Canvas environment
+        const API_KEY = ""; 
 
         // --- Utility Functions ---
 
@@ -235,7 +271,7 @@
             return null;
         };
 
-        // --- TTS Helper Functions ---
+        // --- TTS Helper Functions (Uses gemini-2.5-flash-preview-tts) ---
         const base64ToArrayBuffer = (base64) => {
             const binaryString = atob(base64);
             const len = binaryString.length;
@@ -338,13 +374,11 @@
                         return;
                     }
                 } catch (error) {
-                    // console.error(`TTS attempt ${attempt + 1} failed:`, error);
                     if (attempt < 2) {
                         await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
                     }
                 }
             }
-            // console.error("TTS failed after all retries.");
         };
 
 
@@ -384,9 +418,15 @@
         };
 
         const renderGameUI = (game) => {
-            const { board, turn, status, khushiWins, shubhamWins } = game;
+            const { board, turn, status, khushiWins, shubhamWins, playerXId, playerOId } = game;
 
-            // Update UI visibility
+            // Only show game UI if user is part of the game
+            if (!currentGameId || (playerXId !== userId && playerOId !== userId)) {
+                ui.lobbySection.classList.remove('hidden');
+                ui.gameSection.classList.add('hidden');
+                return;
+            }
+
             ui.lobbySection.classList.add('hidden');
             ui.gameSection.classList.remove('hidden');
             ui.yourPlayerName.textContent = getPlayerName(playerMark);
@@ -403,17 +443,18 @@
                 const winnerMark = status === 'X_WINS' ? 'X' : 'O';
                 const winnerName = getPlayerName(winnerMark);
                 
-                // Trigger TTS only if status just changed to a winning state
+                // Trigger TTS and record history only once per win
                 if (lastGameStatus !== status) {
                     const ttsMessage = winnerName === 'Khushi' 
                         ? "Aww, Khushi won this round! Congratulations!" 
                         : "Shubham won this round, but Khushi is still the cutest!";
                     callTTSApi(ttsMessage);
+                    recordGameHistory(game, winnerName, 'Win');
                 }
 
                 if (shubhamWins >= WINNING_SCORE || khushiWins >= WINNING_SCORE) {
                     const finalWinnerName = shubhamWins >= WINNING_SCORE ? 'Shubham' : 'Khushi';
-                    ui.finalWinnerMessage.textContent = `${finalWinnerName} wins the game! Time for a dare! 😉`;
+                    ui.finalWinnerMessage.textContent = `${finalWinnerName} wins the series! Time for a dare! 😉`;
                     ui.finalWinnerMessage.classList.remove('hidden');
                     message = "Series Over!";
                     colorClass = "bg-purple-600 text-white";
@@ -421,47 +462,41 @@
                 } else {
                     // Custom Khushi/Shubham win messages
                     if (winnerMark === 'X') { // Shubham (X) won
-                        if (playerMark === 'X') { // Shubham's Screen
+                        if (playerMark === 'X') { // Shubham's Screen (Shubham won, but he shows Khushi won)
                             message = "Khushi hi jiti hai 🥺"; 
-                        } else { // Khushi's Screen
+                        } else { // Khushi's Screen (Khushi didn't win, but she sees this sweet message)
                             message = "Cutie tmhi jiti ho 😍"; 
                         }
                     } else { // Khushi (O) won
+                        // Khushi won, so both see the generic sweet message
                         message = "Aww, Khushi won this round! Cutie tmhi jiti ho! ✨";
                     }
-                    colorClass = (winnerMark === playerMark) ? "bg-green-500 text-white" : "bg-red-500 text-white";
+                    colorClass = (winnerMark === playerMark) ? "bg-green-600 text-white" : "bg-red-600 text-white";
                     ui.newRoundBtn.textContent = "Play Next Round";
                 }
                 ui.newRoundBtn.classList.remove('hidden');
-            } else if (shubhamWins >= WINNING_SCORE || khushiWins >= WINNING_SCORE) {
-                // Game is over but status is still IN_PROGRESS/LOBBY (prevents flashing)
-                const finalWinnerName = shubhamWins >= WINNING_SCORE ? 'Shubham' : 'Khushi';
-                ui.finalWinnerMessage.textContent = `${finalWinnerName} wins the game! Time for a dare! 😉`;
-                ui.finalWinnerMessage.classList.remove('hidden');
-                message = "Series Over!";
-                colorClass = "bg-purple-600 text-white";
-                ui.newRoundBtn.textContent = "Start New Game Series";
+            } else if (status === 'DRAW') {
+                if (lastGameStatus !== status) {
+                    recordGameHistory(game, 'Draw', 'Draw');
+                }
+                message = "It's a Draw this round! 🤝";
+                colorClass = "bg-yellow-600 text-white";
+                ui.newRoundBtn.textContent = "Play Next Round";
                 ui.newRoundBtn.classList.remove('hidden');
             } else {
                 switch (status) {
                     case 'LOBBY':
                         message = `Waiting for ${getOpponentName(playerMark)} to join...`;
-                        colorClass = "bg-yellow-700 text-yellow-200";
+                        colorClass = "bg-blue-800 text-blue-200";
                         break;
                     case 'IN_PROGRESS':
                         if (turn === playerMark) {
-                            message = `Your turn, ${getPlayerName(playerMark)}!`;
-                            colorClass = "bg-pink-700 text-pink-200";
+                            message = `Your turn, ${getPlayerName(playerMark)}! Execute!`;
+                            colorClass = "bg-green-700 text-white";
                         } else {
-                            message = `Waiting for ${getPlayerName(turn)} to move...`;
-                            colorClass = "bg-blue-700 text-blue-200";
+                            message = `Awaiting ${getPlayerName(turn)}'s move...`;
+                            colorClass = "bg-gray-700 text-gray-200";
                         }
-                        break;
-                    case 'DRAW':
-                        message = "It's a Draw this round! 🤝";
-                        colorClass = "bg-purple-500 text-white";
-                        ui.newRoundBtn.textContent = "Play Next Round";
-                        ui.newRoundBtn.classList.remove('hidden');
                         break;
                 }
             }
@@ -470,7 +505,77 @@
             renderBoard(board, game);
             lastGameStatus = status; // Update status tracker
         };
+        
+        // --- History System Functions ---
 
+        const recordGameHistory = async (game, result, type) => {
+            const historyRef = collection(db, COLLECTIONS.history);
+
+            let resultString = '';
+            let winnerId = null;
+
+            if (type === 'Draw') {
+                resultString = 'Draw';
+            } else {
+                const winnerMark = result === PLAYER_NAMES['X'] ? 'X' : 'O';
+                winnerId = winnerMark === 'X' ? game.playerXId : game.playerOId;
+                const loserName = winnerMark === 'X' ? PLAYER_NAMES['O'] : PLAYER_NAMES['X'];
+                resultString = `${result} defeated ${loserName}`;
+            }
+
+            const historyEntry = {
+                shubham: game.playerXId,
+                khushi: game.playerOId,
+                shubhamWins: game.shubhamWins,
+                khushiWins: game.khushiWins,
+                result: resultString,
+                timestamp: Date.now(),
+            };
+
+            try {
+                // Add new history entry
+                await addDoc(historyRef, historyEntry);
+            } catch (e) {
+                console.error("Error recording history:", e);
+            }
+        };
+
+        const renderHistory = (history) => {
+            ui.historyBody.innerHTML = '';
+            
+            if (history.length === 0) {
+                ui.historyMessage.textContent = 'No games recorded yet.';
+                return;
+            }
+
+            ui.historyMessage.textContent = '';
+            
+            history.forEach(entry => {
+                const row = document.createElement('tr');
+                
+                let resultClass = '';
+                let resultText = '';
+
+                if (entry.result === 'Draw') {
+                    resultText = 'Draw 🤝';
+                    resultClass = 'history-draw';
+                } else if (entry.result.includes('Shubham')) {
+                    resultText = 'Shubham ⭐';
+                    resultClass = 'history-winner text-blue-400';
+                } else {
+                    resultText = 'Khushi 🎀';
+                    resultClass = 'history-winner text-pink-400';
+                }
+
+                const date = new Date(entry.timestamp).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short' });
+
+                row.innerHTML = `
+                    <td class="text-left py-2 px-1 text-gray-400">${date}</td>
+                    <td class="text-center py-2 px-1 font-bold ${resultClass}">${resultText}</td>
+                `;
+                ui.historyBody.appendChild(row);
+            });
+        };
 
         // --- Firestore Operations ---
 
@@ -569,7 +674,7 @@
 
             if (status !== 'IN_PROGRESS' || turn !== playerMark || board[index] !== "") {
                 setLoading(false);
-                return; // Not your turn, game over, or cell taken
+                return; 
             }
 
             // 1. Update the board
@@ -586,12 +691,12 @@
 
             if (winner === 'DRAW') {
                 newStatus = 'DRAW';
-                nextTurn = null; // No next turn in this round
+                nextTurn = null; 
             } else if (winner) {
                 newStatus = winner === 'X' ? 'X_WINS' : 'O_WINS';
                 if (winner === 'X') shubhamWins++;
                 else khushiWins++;
-                nextTurn = null; // No next turn in this round
+                nextTurn = null; 
             }
 
             // 3. Commit the state update
@@ -642,10 +747,10 @@
         }
 
 
-        // --- Real-Time Listener ---
+        // --- Real-Time Listeners ---
 
         const startRealTimeListener = (gameId) => {
-            // Stop previous listener if active
+            // Stop previous game listener if active
             if (unsubscribeGame) {
                 unsubscribeGame();
             }
@@ -661,7 +766,6 @@
                     }
                 } else {
                     showMessage("Game deleted or disconnected.", 'bg-red-700 text-red-200');
-                    // Optionally reset to lobby
                 }
             }, (error) => {
                 console.error("Firestore snapshot error:", error);
@@ -670,40 +774,50 @@
             });
         };
 
+        const startHistoryListener = () => {
+            if (unsubscribeHistory) {
+                unsubscribeHistory();
+            }
+            const historyCollectionRef = collection(db, COLLECTIONS.history);
+            // Query the last 20 games by timestamp descending
+            // Note: Firebase warns against orderBy without an index, so we sort client-side after fetching.
+            const historyQuery = query(historyCollectionRef, limit(HISTORY_LIMIT));
+
+            unsubscribeHistory = onSnapshot(historyQuery, (snapshot) => {
+                const rawHistory = snapshot.docs.map(doc => doc.data());
+                // Sort client-side by timestamp DESC
+                const sortedHistory = rawHistory.sort((a, b) => b.timestamp - a.timestamp);
+                renderHistory(sortedHistory);
+            }, (error) => {
+                console.error("History snapshot error:", error);
+                ui.historyMessage.textContent = 'Failed to load history.';
+            });
+        };
+
 
         // --- Initialization ---
 
         const initFirebase = async () => {
             setLoading(true);
+            
             try {
-                app = initializeApp(firebaseConfig);
+                app = initializeApp(FIREBASE_CONFIG);
                 db = getFirestore(app);
                 auth = getAuth(app);
 
-                // Authenticate the user
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                // Wait for auth state to be ready
-                onAuthStateChanged(auth, (user) => {
-                    if (user) {
-                        userId = user.uid;
-                        ui.userIdDisplay.textContent = userId;
-                        ui.gameIdInput.value = userId; // Pre-fill join with own ID for quick rejoin/creator setup
-                        setLoading(false);
-                    } else {
-                        console.error("Authentication failed.");
-                        showMessage("Authentication failed. Cannot connect to service.", 'bg-red-700 text-red-200');
-                        setLoading(false);
-                    }
-                });
+                const userCredential = await signInAnonymously(auth);
+                userId = userCredential.user.uid;
+                
+                ui.userIdDisplay.textContent = userId;
+                ui.gameIdInput.value = userId; 
+                setLoading(false);
+                
+                startHistoryListener();
 
             } catch (e) {
-                console.error("Firebase initialization failed:", e);
-                showMessage("Failed to initialize game service.", 'bg-red-700 text-red-200');
+                console.error("Firebase initialization or anonymous sign-in failed:", e);
+                // The explicit message for the user, in case they missed the manual setup
+                showMessage("CRITICAL ERROR: Please ensure **Anonymous Sign-in** is **ENABLED** (Auth > Sign-in method) AND your **Firestore rules** are set correctly for /tictactoe_games_shubham_khushi_tts and /game_history.", 'bg-red-700 text-white font-bold');
                 setLoading(false);
             }
         };
@@ -728,69 +842,94 @@
 </head>
 <body>
     <div id="loadingOverlay" class="loading-overlay">
-        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-fbd38d loading-spinner"></div>
-        <p class="ml-4 text-lg text-fbd38d">Connecting to the magic server...</p>
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-00ffff loading-spinner"></div>
+        <p class="ml-4 text-lg text-00ffff font-orbitron">Connecting to your secure server...</p>
     </div>
 
-    <div class="container">
-        <h1 class="text-3xl font-extrabold text-center mb-1 flex justify-center items-baseline">
-            <span class="text-blue-400 mr-2 text-4xl">Shubham</span>
-            <span class="text-4xl text-red-600 mx-1 font-extrabold vs-comp">VS</span>
-            <span class="text-pink-400 ml-2 text-4xl">Khushi</span>
-        </h1>
-        <h2 class="text-xl font-semibold text-center text-gray-400 mb-6">
-            The Ultimate Dare Challenge!
-        </h2>
-        
-        <div class="p-3 bg-gray-800 rounded-lg text-sm mb-4 border border-gray-600">
-            <p class="font-bold text-gray-300">Your User ID (Share this if you're Shubham!):</p>
-            <code id="userIdDisplay" class="break-all text-blue-400 font-mono mt-1 block">Loading...</code>
-        </div>
-        
-        <!-- Lobby Section --><div id="lobbySection" class="space-y-4">
-            <h2 class="text-xl font-semibold text-center text-gray-200">Start or Join Game</h2>
+    <div class="main-grid">
+        <!-- Game Area Card (Left/Top) -->
+        <div class="card">
+            <h1 class="text-3xl font-extrabold text-center mb-1 flex justify-center items-baseline">
+                <span class="text-blue-400 mr-2 text-4xl">SHUBHAM</span>
+                <span class="text-4xl text-red-600 mx-1 font-extrabold vs-comp">VS</span>
+                <span class="text-pink-400 ml-2 text-4xl">KHUSHI</span>
+            </h1>
+            <h2 class="text-xl font-semibold text-center text-gray-400 mb-6">
+                THE DARE CHALLENGE
+            </h2>
             
-            <button id="createGameBtn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-150 shadow-md hover:shadow-lg hover:shadow-blue-500/50">
-                I'm Shubham! Create New Game ⭐
-            </button>
+            <div class="p-3 bg-gray-800 rounded-lg text-sm mb-4 border border-gray-600 font-mono">
+                <p class="font-bold text-gray-300">YOUR ID (Game Host Key):</p>
+                <code id="userIdDisplay" class="break-all text-blue-400 font-bold mt-1 block text-lg">Loading...</code>
+            </div>
+            
+            <!-- Lobby Section --><div id="lobbySection" class="space-y-4">
+                <h2 class="text-xl font-semibold text-center text-gray-200 font-orbitron">BATTLE SETUP</h2>
+                
+                <button id="createGameBtn" class="w-full bg-blue-500 hover:bg-blue-600 text-white btn-base font-bold py-3 px-4 rounded-lg shadow-md hover:shadow-blue-500/50">
+                    I'm Shubham! Create New Game ⭐
+                </button>
 
-            <div class="flex items-center space-x-2">
-                <input type="text" id="gameIdInput" placeholder="Enter Shubham's User ID to Join" class="flex-grow p-3 border-2 border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:border-pink-500" />
-                <button id="joinGameBtn" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-4 rounded-lg transition duration-150 shadow-md hover:shadow-lg hover:shadow-pink-500/50 whitespace-nowrap">
-                I'm Khushi! Join Game 🎀
+                <div class="flex items-center space-x-2">
+                    <input type="text" id="gameIdInput" placeholder="Enter Shubham's ID to Join" class="flex-grow p-3 border-2 border-gray-600 bg-gray-700 text-white rounded-lg focus:outline-none focus:border-pink-500 font-inter" />
+                    <button id="joinGameBtn" class="bg-pink-500 hover:bg-pink-600 text-white btn-base font-bold py-3 px-4 rounded-lg shadow-md hover:shadow-pink-500/50 whitespace-nowrap">
+                    I'm Khushi! Join Game 🎀
+                    </button>
+                </div>
+                <p id="gameStatus" class="status-message bg-gray-700 text-gray-200">
+                    Awaiting connection.
+                </p>
+            </div>
+
+            <!-- Game Section --><div id="gameSection" class="hidden">
+                <div class="text-center mb-4">
+                    <p class="text-lg font-medium">Player: <span id="yourPlayerName" class="font-bold text-xl text-00ffff">?</span></p>
+                </div>
+
+                <div class="score-display">
+                    <div class="score-box">
+                        <span class="text-blue-400">SHUBHAM ⭐</span>
+                        <div id="shubhamScore" class="score-value text-blue-400">0</div>
+                    </div>
+                    <div class="score-box">
+                        <span class="text-pink-400">KHUSHI 🎀</span>
+                        <div id="khushiScore" class="score-value text-pink-400">0</div>
+                    </div>
+                </div>
+                
+                <p id="gameStatus" class="status-message bg-gray-700 text-gray-200">Status will appear here.</p>
+                <p id="finalWinnerMessage" class="status-message bg-purple-600 text-white font-extrabold text-xl hidden font-inter"></p>
+
+                <div id="boardContainer" class="board">
+                    <!-- Tic-Tac-Toe cells will be rendered here by JS --></div>
+
+                <button id="newRoundBtn" class="w-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white btn-base font-bold py-3 px-4 rounded-lg shadow-md hover:shadow-green-500/50 hidden">
+                    Play Next Round
                 </button>
             </div>
-            <p id="gameStatus" class="status-message bg-gray-700 text-gray-200">
-                Awaiting action.
-            </p>
         </div>
 
-        <!-- Game Section --><div id="gameSection" class="hidden">
-            <div class="text-center mb-4">
-                <p class="text-lg font-medium">You are: <span id="yourPlayerName" class="font-bold text-xl text-fbd38d">?</span></p>
+        <!-- History Card (Right/Bottom) -->
+        <div class="card">
+            <h2 class="text-2xl font-bold mb-4 text-00ffff border-b border-gray-700 pb-2 font-orbitron">
+                BATTLE HISTORY (Last 20)
+            </h2>
+            <p id="historyMessage" class="text-center text-gray-500 italic mb-4">Loading history...</p>
+            <div class="overflow-x-auto">
+                <table class="w-full history-table">
+                    <thead>
+                        <tr>
+                            <th class="text-left py-2 px-1">TIME</th>
+                            <th class="text-center py-2 px-1">WINNER</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyBody">
+                        <!-- History rows populated by JS -->
+                    </tbody>
+                </table>
             </div>
-
-            <div class="score-display">
-                <div class="score-box">
-                    Shubham ⭐
-                    <div id="shubhamScore" class="score-value">0</div>
-                </div>
-                <div class="score-box">
-                    Khushi 🎀
-                    <div id="khushiScore" class="score-value">0</div>
-                </div>
-            </div>
-            
-            <p id="gameStatus" class="status-message bg-gray-700 text-gray-200">Status will appear here.</p>
-            <p id="finalWinnerMessage" class="status-message bg-purple-600 text-white font-extrabold text-xl hidden"></p>
-
-            <div id="boardContainer" class="board">
-                <!-- Tic-Tac-Toe cells will be rendered here by JS --></div>
-
-            <button id="newRoundBtn" class="w-full bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white font-bold py-3 px-4 rounded-lg transition duration-150 shadow-md hover:shadow-lg hover:shadow-red-500/50 hidden">
-                Play Next Round
-            </button>
         </div>
+
     </div>
 </body>
 </html>
